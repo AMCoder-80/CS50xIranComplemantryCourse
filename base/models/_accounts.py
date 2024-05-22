@@ -1,6 +1,6 @@
 # Django related modules
 from django.db import models
-from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
+from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
 
 # Local modules
 from base.models import BaseModel
@@ -9,19 +9,20 @@ from base.models import BaseModel
 class UserManager(BaseUserManager):
     """ Custom user manager """
 
-    def create_user(self, email, *extra_fields):
+    def create_user(self, email, password, **extra_fields):
         """ Create normal users """
-        extra_fields.setdetaul("is_active", True)
+        extra_fields.setdefault("is_active", True)
         if not extra_fields.get("is_active"):
             raise ValueError("is_active value is not valid")
         try:
-            user = self.model(email=email, *extra_fields)
+            user = self.model(email=email, **extra_fields)
+            user.set_password(password)
             user.save()
             return user
         except Exception as e:
             raise ValueError(e)
     
-    def create_superuser(self, email, *extra_fields):
+    def create_superuser(self, email, password, **extra_fields):
         """ Create super users """
         extra_fields.setdefault("is_active", True)
         extra_fields.setdefault("is_staff", True)
@@ -33,15 +34,15 @@ class UserManager(BaseUserManager):
             raise ValueError("is_staff value is not valid")
         if not extra_fields.get("is_superuser"):
             raise ValueError("is_superuser value is not valid")
-        return self.create_user(email, *extra_fields)
+        return self.create_user(email, password, **extra_fields)
 
 
-class User(AbstractBaseUser):
+class User(AbstractBaseUser, PermissionsMixin):
     """ Main model for storing user information """
     # personal data fields
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
-    email = models.EmailField()
+    email = models.EmailField(unique=True)
     
     # django related fields
     is_active = models.BooleanField(default=True)
@@ -78,7 +79,7 @@ class Profile(BaseModel):
     description = models.TextField(blank=True, null=True)
 
     # Relational fields
-    user = models.OneToOneField("User", on_delete=models.CASCADE, related_name="profile")
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
 
     def __str__(self):
         return f"Profile Object: {self.id} - {self.user.get_full_name()}"
