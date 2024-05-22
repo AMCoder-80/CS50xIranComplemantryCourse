@@ -16,5 +16,8 @@ RUN pip install -r requirements.txt
 # Copy the rest of the project
 COPY . .
 
+# Set ENV variables
+ENV PYTHONUNBUFFERED=1
+
 # Run project
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
