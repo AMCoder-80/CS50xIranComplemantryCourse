@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "base.apps.BaseConfig",
 
     # Third party apps
+    "rest_framework",
 ]
 
 MIDDLEWARE = [
