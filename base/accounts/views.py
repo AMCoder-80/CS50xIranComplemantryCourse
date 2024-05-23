@@ -62,3 +62,8 @@ class ProfileCreationView(CreateAPIView):
     """ Create new profile instance """
     serializer_class = ProfileCreationSerializer
     queryset = Profile
+
+    def get_serializer_context(self):
+        context =  super().get_serializer_context()
+        context["user"] = self.request.user
+        return context
