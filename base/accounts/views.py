@@ -1,5 +1,4 @@
 # django related modules
-from django.contrib.auth.models import update_last_login
 
 # DRF related modules
 from rest_framework import status
@@ -7,13 +6,14 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.generics import CreateAPIView
 from rest_framework.generics import GenericAPIView
-from rest_framework_simplejwt.tokens import RefreshToken
 
 # Local modules
 from base.accounts.serializers import (
     UserCreationSerializer, ProfileCreationSerializer
 )
 from base.models import User, Profile
+from utils.auth import generate_jwt_for_user
+
 # Third party modules
 
 
@@ -54,12 +54,7 @@ class UserCreationView(GenericAPIView):
         serialized = self.get_serializer(data=request.data)
         serialized.is_valid(raise_exception=True)
         user = serialized.save()
-        tokens = RefreshToken.for_user(user)
-        update_last_login(None, user)
-        response = {
-            "refresh": str(tokens),
-            "access": str(tokens.access_token)
-        }
+        response = generate_jwt_for_user(user)
         return Response(response, status=status.HTTP_201_CREATED)
 
 
