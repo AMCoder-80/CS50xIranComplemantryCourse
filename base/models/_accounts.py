@@ -12,13 +12,15 @@ class UserManager(BaseUserManager):
     def create_user(self, email, password, **extra_fields):
         """ Create normal users """
         extra_fields.setdefault("is_active", True)
-        if not extra_fields.get("is_active"):
+        if extra_fields.get("is_active") is not True:
             raise ValueError("is_active value is not valid")
+
         try:
             user = self.model(email=email, **extra_fields)
             user.set_password(password)
             user.save()
             return user
+
         except Exception as e:
             raise ValueError(e)
     
@@ -79,7 +81,7 @@ class Profile(BaseModel):
     description = models.TextField(blank=True, null=True)
 
     # Relational fields
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
+    user = models.OneToOneField("base.User", on_delete=models.CASCADE, related_name="profile")
 
     def __str__(self):
         return f"Profile Object: {self.id} - {self.user.get_full_name()}"

@@ -9,7 +9,8 @@ from rest_framework.generics import CreateAPIView
 # Local modules
 from base.accounts.serializers import CreateUserSerializer
 from base.models import User
-# Third party moddules
+# Third party modules
+
 
 # @api_view(['POST'])
 # def create_user(request):
