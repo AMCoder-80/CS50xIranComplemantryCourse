@@ -1,14 +1,19 @@
 # django related modules
+from django.contrib.auth.models import update_last_login
 
 # DRF related modules
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.generics import CreateAPIView
+from rest_framework.generics import GenericAPIView
+from rest_framework_simplejwt.tokens import RefreshToken
 
 # Local modules
-from base.accounts.serializers import CreateUserSerializer
-from base.models import User
+from base.accounts.serializers import (
+    UserCreationSerializer, ProfileCreationSerializer
+)
+from base.models import User, Profile
 # Third party modules
 
 
@@ -16,12 +21,49 @@ from base.models import User
 # def create_user(request):
 #     """ Create new user """
 #     if request.method == 'POST':
-#         serialized = CreateUserSerializer(data=request.data)
+#         serialized = UserCreationSerializer(data=request.data)
 #         serialized.is_valid(raise_exception=True)
 #         serialized.save()
 #         return Response(serialized.data, status=status.HTTP_200_OK)
 
 
-class CreateUserView(CreateAPIView):
-    serializer_class = CreateUserSerializer
+# class UserCreationView(GenericAPIView):
+#     """ Create new user instance """
+#     serializer_class = UserCreationSerializer
+#     queryset = User.objects.all()
+
+#     def post(self, request, *args, **kwargs):
+#         serialized = self.get_serializer(data=request.data)
+#         serialized.is_valid(raise_exception=True)
+#         user = serialized.save()
+#         tokens = RefreshToken.for_user(user)
+#         update_last_login(None, user)
+#         response = {
+#             "refresh": str(tokens),
+#             "access": str(tokens.access_token)
+#         }
+#         return Response(response, status=status.HTTP_201_CREATED)
+
+
+class UserCreationView(GenericAPIView):
+    """ Create new user instance """
+    serializer_class = UserCreationSerializer
     queryset = User.objects.all()
+
+    def post(self, request, *args, **kwargs):
+        serialized = self.get_serializer(data=request.data)
+        serialized.is_valid(raise_exception=True)
+        user = serialized.save()
+        tokens = RefreshToken.for_user(user)
+        update_last_login(None, user)
+        response = {
+            "refresh": str(tokens),
+            "access": str(tokens.access_token)
+        }
+        return Response(response, status=status.HTTP_201_CREATED)
+
+
+class ProfileCreationView(CreateAPIView):
+    """ Create new profile instance """
+    serializer_class = ProfileCreationSerializer
+    queryset = Profile
