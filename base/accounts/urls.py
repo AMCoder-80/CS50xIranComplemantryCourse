@@ -1,6 +1,7 @@
 from django.urls import path
 from base.accounts.views import (
-    UserCreationView, ProfileCreationView
+    UserCreationView, ProfileCreationView,
+    LoginRequestView
 )
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -12,6 +13,7 @@ from rest_framework_simplejwt.views import (
 urlpatterns = [
     # path('signup/', create_user, name="create_new_user"),   
     path('signup/', UserCreationView.as_view(), name="create_new_user"),
+    path('signin/', LoginRequestView.as_view(), name="login_request"),
     path('profile/create/', ProfileCreationView.as_view(), name="create_new_profile"),
     # rest default routes
     path('login/', TokenObtainPairView.as_view(), name='login_with_password'),

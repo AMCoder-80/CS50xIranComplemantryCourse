@@ -9,7 +9,8 @@ from rest_framework.generics import GenericAPIView
 
 # Local modules
 from base.accounts.serializers import (
-    UserCreationSerializer, ProfileCreationSerializer
+    UserCreationSerializer, ProfileCreationSerializer,
+    LoginRequestSerializer
 )
 from base.models import User, Profile
 from utils.auth import generate_jwt_for_user
@@ -67,3 +68,14 @@ class ProfileCreationView(CreateAPIView):
         context =  super().get_serializer_context()
         context["user"] = self.request.user
         return context
+    
+
+class LoginRequestView(GenericAPIView):
+    """ User sends request to get OTP code """
+    serializer_class = LoginRequestSerializer
+
+    def post(self, request, *args, **kwargs):
+        serialized = self.get_serializer(data=request.data)
+        serialized.is_valid(raise_exception=True)
+        serialized.send_token()
+        return Response("OK")
