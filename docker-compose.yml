@@ -6,6 +6,8 @@ services:
         container_name: backend
         ports:
             - 8000:8000
+        env_file:
+            - ./envs/django/.env
         volumes:
             - ./:/app/
         command: sh -c
