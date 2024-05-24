@@ -17,12 +17,12 @@ class CachingProcedureHandler:
     def set_key(self, type, email, token):
         """ store a key in cache """
         key = self.keys[type]
-        return cache.set(f"{email}:{key}", token, self.expiration)
+        return cache.set(f"{token}:{key}", email, self.expiration)
     
-    def get_key(self, type, email):
+    def get_key(self, type, token):
         """ get a value from cache """
         key = self.keys[type]
-        return cache.get(f"{email}:{key}")
+        return cache.get(f"{token}:{key}")
     
     def generate_token(self):
         """ generate a token for authentication """

@@ -10,7 +10,7 @@ from rest_framework.generics import GenericAPIView
 # Local modules
 from base.accounts.serializers import (
     UserCreationSerializer, ProfileCreationSerializer,
-    LoginRequestSerializer
+    LoginRequestSerializer, VerifyTokenSerializer
 )
 from base.models import User, Profile
 from utils.auth import generate_jwt_for_user
@@ -78,4 +78,16 @@ class LoginRequestView(GenericAPIView):
         serialized = self.get_serializer(data=request.data)
         serialized.is_valid(raise_exception=True)
         serialized.send_token()
-        return Response("OK")
+        return Response("Email sent", status=status.HTTP_200_OK)
+
+
+class VerifyTokenView(GenericAPIView):
+    """ Verify user token and send jwt token """
+    serializer_class = VerifyTokenSerializer
+
+    def post(self, request, *args, **kwargs):
+        serialized = self.get_serializer(data=request.data)
+        serialized.is_valid(raise_exception=True)
+        user = serialized.get_user()
+        response = generate_jwt_for_user(user)
+        return Response(response, status=status.HTTP_200_OK)
