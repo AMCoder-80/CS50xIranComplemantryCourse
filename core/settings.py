@@ -154,3 +154,11 @@ CACHES = {
         }
     }
 }
+
+
+# EMAIL_BACKEND="django.core.mail.backends.smtp.EmailBackend"
+# EMAIL_HOST="smtp.c1.liara.email"
+# EMAIL_PORT=587
+# EMAIL_HOST_USER="strange_williams_p24unk"
+# EMAIL_HOST_PASSWORD="228f05f2-6c0b-45b5-a7f8-b063fe9c4f59"
+# EMAIL_USE_TLS=True
