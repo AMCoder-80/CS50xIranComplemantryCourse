@@ -26,7 +26,7 @@ SECRET_KEY = config("SECRET_KEY", cast=str)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", default=False, cast=bool)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -44,9 +44,12 @@ INSTALLED_APPS = [
 
     # Third party apps
     "rest_framework",
+    "corsheaders"
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -163,3 +166,6 @@ CACHES = {
 # EMAIL_HOST_USER="strange_williams_p24unk"
 # EMAIL_HOST_PASSWORD="228f05f2-6c0b-45b5-a7f8-b063fe9c4f59"
 # EMAIL_USE_TLS=True
+
+
+CORS_ALLOW_ALL_ORIGINS = True
