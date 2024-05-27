@@ -32,9 +32,19 @@ class ProfileCreationSerializer(serializers.ModelSerializer):
         if attrs["age"] < 18:
             raise CustomException(
                 "Your age must be at least 18",
-                "age",
+                "error",
                 status.HTTP_406_NOT_ACCEPTABLE
             )
+        
+        user = self.context['user']
+        profiles = Profile.objects.filter(user=user)
+        if profiles.exists():
+            raise CustomException(
+                "Your already have a profile",
+                "error",
+                status.HTTP_400_BAD_REQUEST
+            )
+
         return super().validate(attrs)
 
     def create(self, validated_data):
@@ -63,7 +73,7 @@ class VerifyTokenSerializer(serializers.Serializer):
         if email is None:
             raise CustomException(
                 "Invalid token",
-                "token",
+                "error",
                 status.HTTP_403_FORBIDDEN
             )
         attrs.update({
@@ -78,7 +88,7 @@ class VerifyTokenSerializer(serializers.Serializer):
         except User.DoesNotExist:
             raise CustomException(
                 "requested user does not exists",
-                "email",
+                "error",
                 status.HTTP_400_BAD_REQUEST
             )
         return user
@@ -94,7 +104,7 @@ class LoginRequestSerializer(serializers.Serializer):
         if not users.exists():
             raise CustomException(
                 "user with this email does not exists",
-                "email",
+                "error",
                 status.HTTP_401_UNAUTHORIZED
             )
 
@@ -114,7 +124,7 @@ class LoginRequestSerializer(serializers.Serializer):
         if not result:
             raise CustomException(
                 "Failed to store token in cache",
-                "caching",
+                "error",
                 status.HTTP_500_INTERNAL_SERVER_ERROR
             )
         email_handler.send_otp(email, token)
