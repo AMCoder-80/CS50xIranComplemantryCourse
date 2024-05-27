@@ -20,6 +20,7 @@ class Exercise(BaseModel):
     # Numerical data fields
     repeatation = models.PositiveSmallIntegerField()
     duration = models.PositiveIntegerField()
+    image = models.ImageField(upload_to="exercise_images/")
 
     # Relational data fields
     profile = models.ForeignKey("base.Profile", on_delete=models.CASCADE, related_name="exercises")
