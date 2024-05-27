@@ -26,3 +26,11 @@ class Exercise(BaseModel):
 
     def __str__(self):
         return f"Exercise Object: {self.id} - {self.get_type_display()} - {self.repeatation}"
+
+
+class WorkoutGif(BaseModel):
+    """ Store each gif and its creation date """
+    gif = models.FileField(upload_to='gifs/')
+
+    def __str__(self):
+        return f"WorkoutGif Object: {self.id}"
