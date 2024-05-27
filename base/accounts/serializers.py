@@ -159,7 +159,6 @@ class ProfileUpdateSerializer(serializers.ModelSerializer):
         read_only_fields = ['BMI', 'avatar'] 
 
     def update(self, instance, validated_data):
-        print(validated_data)
         user_data = validated_data.pop('user', None)
         
         for attr, value in validated_data.items():
@@ -167,7 +166,6 @@ class ProfileUpdateSerializer(serializers.ModelSerializer):
                 setattr(instance, attr, value)
         instance.save()
 
-        print(user_data is None)
         if user_data:
             user = instance.user
             for attr, value in user_data.items():

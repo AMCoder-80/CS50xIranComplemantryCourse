@@ -99,7 +99,7 @@ class UpdateProfileView(GenericAPIView):
 
     def get(self, request, *args, **kwargs):
         """ return profile object """
-        serialized = self.get_serializer(request.user.profile)
+        serialized = self.get_serializer(request.user.profile, context={"request": request})
         return Response(serialized.data, status=status.HTTP_200_OK)
     
     def put(self, request, *args, **kwargs):
