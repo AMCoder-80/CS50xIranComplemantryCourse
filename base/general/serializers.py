@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from base.models import WorkoutGif
+from base.models import WorkoutGif, Client
 
 
 class WorkoutGifListSerializer(serializers.ModelSerializer):
@@ -7,3 +7,10 @@ class WorkoutGifListSerializer(serializers.ModelSerializer):
     class Meta:
         model = WorkoutGif
         fields = ( 'id', 'gif' )
+
+
+class ClientListSerializer(serializers.ModelSerializer):
+    """ What clients say serializer """
+    class Meta:
+        model = Client
+        fields = ('id', 'name', 'opinion', 'image')

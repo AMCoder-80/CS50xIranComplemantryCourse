@@ -34,3 +34,17 @@ class WorkoutGif(BaseModel):
 
     def __str__(self):
         return f"WorkoutGif Object: {self.id}"
+
+
+class Client(BaseModel):
+    """ What clients says """
+
+    # Textual content
+    name = models.CharField(max_length=100)
+    opinion = models.TextField()
+
+    # image content
+    image = models.ImageField(upload_to='clients_avatar/')
+
+    def __str__(self):
+        return f"Client Objects: {self.id} - {self.name}"
