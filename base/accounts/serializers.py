@@ -14,6 +14,17 @@ class UserCreationSerializer(serializers.ModelSerializer):
         fields = (
             "first_name", "last_name", "email"
         )
+  
+    def run_validation(self, data=...):
+        print("Validating................")
+        users = User.objects.filter(email=data['email'])
+        if users:
+            raise CustomException(
+                "this email is already registered",
+                "error",
+                status.HTTP_400_BAD_REQUEST
+            )
+        return data
 
 
 class ProfileCreationSerializer(serializers.ModelSerializer):
@@ -128,4 +139,39 @@ class LoginRequestSerializer(serializers.Serializer):
                 status.HTTP_500_INTERNAL_SERVER_ERROR
             )
         email_handler.send_otp(email, token)
+
+
+class GetUserDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'email']
+
+    def run_validation(self, data=...):
+        return data
         
+
+class ProfileUpdateSerializer(serializers.ModelSerializer):
+    user = GetUserDataSerializer()
+
+    class Meta:
+        model = Profile
+        fields = ['age', 'weight', 'heigth', 'description', 'avatar', 'BMI', 'user']
+        read_only_fields = ['BMI', 'avatar'] 
+
+    def update(self, instance, validated_data):
+        print(validated_data)
+        user_data = validated_data.pop('user', None)
+        
+        for attr, value in validated_data.items():
+            if value:
+                setattr(instance, attr, value)
+        instance.save()
+
+        print(user_data is None)
+        if user_data:
+            user = instance.user
+            for attr, value in user_data.items():
+                setattr(user, attr, value)
+            user.save()
+
+        return instance

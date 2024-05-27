@@ -4,16 +4,17 @@
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from rest_framework.generics import CreateAPIView
-from rest_framework.generics import GenericAPIView
+from rest_framework.generics import CreateAPIView, GenericAPIView, RetrieveUpdateAPIView
 
 # Local modules
 from base.accounts.serializers import (
     UserCreationSerializer, ProfileCreationSerializer,
-    LoginRequestSerializer, VerifyTokenSerializer
+    LoginRequestSerializer, VerifyTokenSerializer,
+    ProfileUpdateSerializer
 )
 from base.models import User, Profile
 from utils.auth import generate_jwt_for_user
+from utils.exceptions import CustomException
 
 # Third party modules
 
@@ -91,3 +92,26 @@ class VerifyTokenView(GenericAPIView):
         user = serialized.get_user()
         response = generate_jwt_for_user(user)
         return Response(response, status=status.HTTP_200_OK)
+
+
+class UpdateProfileView(GenericAPIView):
+    """ Get and update profile object """
+
+    def get(self, request, *args, **kwargs):
+        """ return profile object """
+        serialized = self.get_serializer(request.user.profile)
+        return Response(serialized.data, status=status.HTTP_200_OK)
+    
+    def put(self, request, *args, **kwargs):
+        """ update existing profile object """
+        serialized = self.get_serializer(request.user.profile, data=request.data, partial=True, context={"user": request.user})
+        serialized.is_valid(raise_exception=True)
+        serialized.save()
+        return Response(serialized.data, status=status.HTTP_200_OK)
+    
+    def get_serializer(self, *args, **kwargs):
+        if self.request.method == 'GET':
+            return ProfileCreationSerializer(*args, **kwargs)
+        elif self.request.method == 'PUT':
+            return ProfileUpdateSerializer(*args, **kwargs)
+    
