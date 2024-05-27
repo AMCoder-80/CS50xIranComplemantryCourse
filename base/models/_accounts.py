@@ -71,7 +71,7 @@ class Profile(BaseModel):
     # Numerical data fields
     age = models.PositiveSmallIntegerField()
     weight = models.FloatField()
-    heigth = models.FloatField()
+    height = models.FloatField()
     BMI = models.FloatField()
 
     # Image related fields

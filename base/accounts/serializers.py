@@ -34,7 +34,7 @@ class ProfileCreationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = (
-            "age", "weight", "heigth",
+            "age", "weight", "height",
             "avatar", "description", "BMI", "user"
         )
     
@@ -61,8 +61,8 @@ class ProfileCreationSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user = self.context['user']
         weight = self.validated_data['weight']
-        heigth = self.validated_data['heigth']
-        BMI = round(weight / (heigth / 100)**2, 1)
+        height = self.validated_data['height']
+        BMI = round(weight / (height / 100)**2, 1)
         profile = Profile.objects.create(
             user=user,
             BMI=BMI,
@@ -155,7 +155,7 @@ class ProfileUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ['age', 'weight', 'heigth', 'description', 'avatar', 'BMI', 'user']
+        fields = ['age', 'weight', 'height', 'description', 'avatar', 'BMI', 'user']
         read_only_fields = ['BMI', 'avatar'] 
 
     def update(self, instance, validated_data):
