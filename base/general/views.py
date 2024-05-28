@@ -1,12 +1,12 @@
 # DRF modules
 from rest_framework.response import Response
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView, ListCreateAPIView
 
 # Local modules
 from base.models import WorkoutGif, Client, Exercise
 from base.general.serializers import (
     WorkoutGifListSerializer, ClientListSerializer,
-    ExerciseListSerializer
+    ExerciseListSerializer, CreateExerciseSerializer
     )
 
 
@@ -22,9 +22,14 @@ class ClientListView(ListAPIView):
     queryset = Client.objects.all()
 
 
-class ExerciseListView(ListAPIView):
-    """ Listing all exercises """
-    serializer_class = ExerciseListSerializer
+class ExerciseListView(ListCreateAPIView):
+    """ Listing all exercises and create new ones"""
     
+    def get_serializer_class(self, *args, **kwargs):
+        if self.request.method == 'POST':
+            return CreateExerciseSerializer
+        elif self.request.method == 'GET':
+            return ExerciseListSerializer
+
     def get_queryset(self):
         return Exercise.objects.filter(profile=self.request.user.profile)
