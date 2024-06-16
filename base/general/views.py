@@ -1,6 +1,9 @@
+# Django related modules
+from django.shortcuts import get_object_or_404
+
 # DRF modules
 from rest_framework.response import Response
-from rest_framework.generics import ListAPIView, ListCreateAPIView
+from rest_framework.generics import ListAPIView, ListCreateAPIView, RetrieveAPIView
 
 # Local modules
 from base.models import WorkoutGif, Client, Exercise
@@ -33,3 +36,13 @@ class ExerciseListView(ListCreateAPIView):
 
     def get_queryset(self):
         return Exercise.objects.filter(profile=self.request.user.profile)
+
+
+class GetExerciseView(RetrieveAPIView):
+    """ Return a single exercise object """
+    serializer_class = ExerciseListSerializer
+
+    def get_queryset(self):
+        token = self.request.GET.get("token")
+        obj = get_object_or_404(Exercise, token=token)
+        return obj
