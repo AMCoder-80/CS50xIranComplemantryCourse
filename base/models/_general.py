@@ -46,7 +46,7 @@ class WorkoutGif(BaseModel):
         return f"WorkoutGif Object: {self.id}"
 
 
-class Client(BaseModel):
+class Client(models.Model):
     """ What clients says """
 
     # Textual content
