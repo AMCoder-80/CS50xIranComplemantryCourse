@@ -3,13 +3,14 @@ from django.shortcuts import get_object_or_404
 
 # DRF modules
 from rest_framework.response import Response
-from rest_framework.generics import ListAPIView, ListCreateAPIView, RetrieveAPIView
+from rest_framework.generics import ListAPIView, ListCreateAPIView, RetrieveUpdateAPIView
 
 # Local modules
 from base.models import WorkoutGif, Client, Exercise
 from base.general.serializers import (
     WorkoutGifListSerializer, ClientListSerializer,
-    ExerciseListSerializer, CreateExerciseSerializer
+    ExerciseListSerializer, CreateExerciseSerializer,
+    ExerciseUpdateSerializer
     )
 
 
@@ -38,11 +39,8 @@ class ExerciseListView(ListCreateAPIView):
         return Exercise.objects.filter(profile=self.request.user.profile)
 
 
-class GetExerciseView(RetrieveAPIView):
+class GetExerciseView(RetrieveUpdateAPIView):
     """ Return a single exercise object """
-    serializer_class = ExerciseListSerializer
-
-    def get_queryset(self):
-        token = self.request.GET.get("token")
-        obj = get_object_or_404(Exercise, token=token)
-        return obj
+    serializer_class = ExerciseUpdateSerializer
+    queryset = Exercise.objects.all()
+    lookup_field = 'token'

@@ -32,6 +32,17 @@ class ExerciseListSerializer(serializers.ModelSerializer):
         return obj.get_status_display()
     
 
+class ExerciseUpdateSerializer(serializers.ModelSerializer):
+    """ List all exercise's data """
+    type = serializers.SerializerMethodField(method_name="get_type")
+    class Meta:
+        model = Exercise
+        fields = ('id', 'title', 'repeatation', 'token', 'status', 'duration', 'type', 'image')
+
+    def get_type(self, obj: Exercise):
+        return obj.get_type_display()
+
+
 class CreateExerciseSerializer(serializers.ModelSerializer):
     """ create a new object with some fields """
     class Meta:
