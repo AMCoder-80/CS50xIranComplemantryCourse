@@ -1,6 +1,16 @@
 version: "3.9"
 
 services:
+
+    db:
+        container_name: db
+        image: postgres:13-alpine
+        volumes:
+        - ./data:/var/lib/postgresql/data
+        env_file:
+        - ./envs/db/.env
+        restart: always
+
     backend:
         build: ./
         container_name: backend
